@@ -4,8 +4,8 @@ version: '3'
 services:
 
   mongo:
-    image: mongo:3
-    container_name: graylog_demo_mongo
+    image: mongo:5.0.13
+    container_name: graylog_mongo
     restart: unless-stopped
     #    volumes:
     #      - ./graylog/mongo_data:/data/db
@@ -13,8 +13,8 @@ services:
       - graylog
 
   elasticsearch:
-    image: elasticsearch
-    container_name: graylog_demo_elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+    container_name: graylog_elasticsearch
     restart: unless-stopped
     #    volumes:
     #      - ./graylog/es_data:/usr/share/elasticsearch/data
@@ -22,7 +22,7 @@ services:
       - http.host=0.0.0.0
       - transport.host=localhost
       - network.host=0.0.0.0
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true -Xms512m -Xmx512m"
     ulimits:
       memlock:
         soft: -1
@@ -35,7 +35,7 @@ services:
       - graylog
 
   graylog:
-    image: graylog/graylog:3.3
+    image: graylog/graylog:5.0
     container_name: graylog_demo_graylog
     restart: unless-stopped
     #    volumes:
@@ -43,7 +43,7 @@ services:
     environment:
       - GRAYLOG_PASSWORD_SECRET=somepasswordpepper # CHANGE ME (must be at least 16 characters)!
       - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918 # Password: admin
-      - GRAYLOG_HTTP_EXTERNAL_URI=http://www.zhengqingya.com:9001/ # TODO 这里填写自己的ip地址
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9001/ # TODO 这里填写自己的ip地址
     ports:
       # Graylog web interface and REST API
       - 9001:9000
